@@ -1,0 +1,205 @@
+{
+   "name": "Suricata Content Packs",
+   "description": "Inputs, Extractors, Streams, Lookup Tables, Lookup Caches and Lookup Data Adapters",
+   "category": "IDS",
+   "inputs": [
+      {
+         "id": "5a9b0dd0687cf800d1ef207c",
+         "title": "Suricata-Logs",
+         "configuration": {
+            "recv_buffer_size": 1048576,
+            "port": 5042,
+            "tls_key_file": "",
+            "tls_enable": false,
+            "tls_key_password": "",
+            "tcp_keepalive": false,
+            "tls_client_auth_cert_file": "",
+            "tls_client_auth": "disabled",
+            "override_source": null,
+            "bind_address": "0.0.0.0",
+            "tls_cert_file": ""
+         },
+         "static_fields": {},
+         "type": "org.graylog.plugins.beats.BeatsInput",
+         "global": false,
+         "extractors": [
+            {
+               "title": "Suricata Extractor",
+               "type": "JSON",
+               "cursor_strategy": "COPY",
+               "target_field": "",
+               "source_field": "message",
+               "configuration": {
+                  "list_separator": ", ",
+                  "kv_separator": "=",
+                  "key_prefix": "",
+                  "key_separator": "_",
+                  "replace_key_whitespace": false,
+                  "key_whitespace_replacement": "_"
+               },
+               "converters": [],
+               "condition_type": "NONE",
+               "condition_value": "",
+               "order": 0
+            },
+            {
+               "title": "Real_timestamp",
+               "type": "GROK",
+               "cursor_strategy": "COPY",
+               "target_field": "",
+               "source_field": "message",
+               "configuration": {
+                  "grok_pattern": "%{TIMESTAMP_ISO8601}"
+               },
+               "converters": [],
+               "condition_type": "NONE",
+               "condition_value": "",
+               "order": 0
+            },
+            {
+               "title": "Real time suricata extractor",
+               "type": "COPY_INPUT",
+               "cursor_strategy": "COPY",
+               "target_field": "real_timestamp",
+               "source_field": "TIMESTAMP_ISO8601",
+               "configuration": {},
+               "converters": [
+                  {
+                     "type": "FLEXDATE",
+                     "configuration": {
+                        "time_zone": "America/Havana"
+                     }
+                  }
+               ],
+               "condition_type": "NONE",
+               "condition_value": "",
+               "order": 0
+            },
+            {
+               "title": "Service Name Extractor (dest_port)",
+               "type": "REGEX",
+               "cursor_strategy": "COPY",
+               "target_field": "Dest_Service_Name",
+               "source_field": "message",
+               "configuration": {
+                  "regex_value": "\\\"dest_port\":(.+?)\\s*,"
+               },
+               "converters": [
+                  {
+                     "type": "LOOKUP_TABLE",
+                     "configuration": {
+                        "lookup_table_name": "Service Port Translator"
+                     }
+                  }
+               ],
+               "condition_type": "NONE",
+               "condition_value": "",
+               "order": 0
+            },
+            {
+               "title": "Service Name Extractor (src_port)",
+               "type": "REGEX",
+               "cursor_strategy": "COPY",
+               "target_field": "Src_Service_Name",
+               "source_field": "message",
+               "configuration": {
+                  "regex_value": "\\\"src_port\":(.+?)\\s*,"
+               },
+               "converters": [
+                  {
+                     "type": "LOOKUP_TABLE",
+                     "configuration": {
+                        "lookup_table_name": "Service Port Translator"
+                     }
+                  }
+               ],
+               "condition_type": "NONE",
+               "condition_value": "",
+               "order": 0
+            },
+            {
+               "title": "Whois Extractor",
+               "type": "LOOKUP_TABLE",
+               "cursor_strategy": "COPY",
+               "target_field": "Whois",
+               "source_field": "src_ip",
+               "configuration": {
+                  "lookup_table_name": "whois"
+               },
+               "converters": [],
+               "condition_type": "NONE",
+               "condition_value": "",
+               "order": 0
+            }
+         ]
+      }
+   ],
+   "streams": [
+      {
+         "id": "5a9b3899687cf80d4ecad45a",
+         "title": "Suricata Logs",
+         "description": "Stream Suricata Logs",
+         "disabled": false,
+         "matching_type": "AND",
+         "stream_rules": [
+            {
+               "type": "EXACT",
+               "field": "type",
+               "value": "suricataIDPS",
+               "inverted": false,
+               "description": ""
+            }
+         ],
+         "outputs": [],
+         "default_stream": false
+      }
+   ],
+   "outputs": [],
+   "dashboards": [],
+   "grok_patterns": [],
+   "lookup_tables": [
+      {
+         "title": "Service Port Translator",
+         "description": "Service Port Translator to name service",
+         "name": "Service Port Translator",
+         "cache_name": "cache-service-port",
+         "data_adapter_name": "cvs-port-translate",
+         "default_single_value": "",
+         "default_single_value_type": "NULL",
+         "default_multi_value": "",
+         "default_multi_value_type": "NULL"
+      }
+   ],
+   "lookup_caches": [
+      {
+         "title": "Cache Service Port",
+         "description": "Cache Service Port",
+         "name": "cache-service-port",
+         "config": {
+            "type": "guava_cache",
+            "max_size": 1000,
+            "expire_after_access": 60,
+            "expire_after_access_unit": "SECONDS",
+            "expire_after_write": 0,
+            "expire_after_write_unit": null
+         }
+      }
+   ],
+   "lookup_data_adapters": [
+      {
+         "title": "CVS Port Translate",
+         "description": "Table CVS for translate port service to service name",
+         "name": "cvs-port-translate",
+         "config": {
+            "type": "csvfile",
+            "path": "/etc/graylog/server/service-names-port-numbers.csv",
+            "separator": ",",
+            "quotechar": "\"",
+            "key_column": "Port",
+            "value_column": "Service",
+            "check_interval": 3,
+            "case_insensitive_lookup": false
+         }
+      }
+   ]
+}
