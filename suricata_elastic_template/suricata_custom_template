@@ -1,0 +1,315 @@
+{
+  "order": -1,
+  "template": "suricata_*",
+  "settings": {
+    "index": {
+      "analysis": {
+        "analyzer": {
+          "analyzer_keyword": {
+            "filter": "lowercase",
+            "tokenizer": "keyword"
+          }
+        }
+      },
+      "max_result_window": "1000000"
+    }
+  },
+  "mappings": {
+    "message": {
+      "properties": {
+        "alert_action": {
+          "type": "keyword"
+        },
+        "alert_category": {
+          "type": "keyword"
+        },
+        "alert_gid": {
+          "type": "long"
+        },
+        "alert_rev": {
+          "type": "long"
+        },
+        "alert_severity": {
+          "type": "long"
+        },
+        "alert_signature": {
+          "type": "keyword"
+        },
+        "alert_signature_id": {
+          "type": "long"
+        },
+        "app_proto": {
+          "type": "keyword"
+        },
+        "dest_ip": {
+          "type": "keyword"
+        },
+        "dest_ip_city_name": {
+          "type": "keyword"
+        },
+        "dest_ip_country_code": {
+          "type": "keyword"
+        },
+        "dest_ip_geolocation": {
+          "type": "string",
+          "copy_to": "dst_location"
+        },
+        "dst_location": {
+          "type": "geo_point"
+        },
+        "dest_port": {
+          "type": "text"
+        },
+        "dns_id": {
+          "type": "long"
+        },
+        "dns_rcode": {
+          "type": "keyword"
+        },
+        "dns_rdata": {
+          "type": "keyword"
+        },
+        "dns_rdata_city_name": {
+          "type": "keyword"
+        },
+        "dns_rdata_country_code": {
+          "type": "keyword"
+        },
+        "dns_rdata_geolocation": {
+          "type": "string",
+          "copy_to": "dns_rdata_location"
+        },
+        "dns_rdata_location": {
+          "type": "geo_point"
+        },
+        "dns_rrname": {
+          "type": "keyword"
+        },
+        "dns_rrtype": {
+          "type": "keyword"
+        },
+        "dns_ttl": {
+          "type": "long"
+        },
+        "dns_tx_id": {
+          "type": "long"
+        },
+        "dns_type": {
+          "type": "keyword"
+        },
+        "event_type": {
+          "type": "keyword"
+        },
+        "facility": {
+          "type": "keyword"
+        },
+        "file": {
+          "type": "keyword"
+        },
+        "fileinfo_filename": {
+          "type": "keyword"
+        },
+        "fileinfo_gaps": {
+          "type": "boolean"
+        },
+        "fileinfo_size": {
+          "type": "long"
+        },
+        "fileinfo_state": {
+          "type": "keyword"
+        },
+        "fileinfo_stored": {
+          "type": "boolean"
+        },
+        "fileinfo_tx_id": {
+          "type": "long"
+        },
+        "flow_id": {
+          "type": "long"
+        },
+        "full_message": {
+          "type": "text",
+          "analyzer": "standard"
+        },
+        "gl2_remote_ip": {
+          "type": "keyword"
+        },
+        "gl2_remote_port": {
+          "type": "keyword"
+        },
+        "gl2_source_input": {
+          "type": "keyword"
+        },
+        "gl2_source_node": {
+          "type": "keyword"
+        },
+        "http_connection": {
+          "type": "keyword"
+        },
+        "http_content_length": {
+          "type": "keyword"
+        },
+        "http_content_type": {
+          "type": "keyword"
+        },
+        "http_date": {
+          "type": "keyword"
+        },
+        "http_hostname": {
+          "type": "keyword"
+        },
+        "http_hostname_city_name": {
+          "type": "keyword"
+        },
+        "http_hostname_country_code": {
+          "type": "keyword"
+        },
+        "http_hostname_geolocation": {
+          "type": "string",
+          "copy_to": "http_hostname_location"
+        },
+        "http_hostname_location": {
+          "type": "geo_point"
+        },
+        "http_http_content_type": {
+          "type": "keyword"
+        },
+        "http_http_method": {
+          "type": "keyword"
+        },
+        "http_http_user_agent": {
+          "type": "keyword"
+        },
+        "http_length": {
+          "type": "long"
+        },
+        "http_protocol": {
+          "type": "keyword"
+        },
+        "http_server": {
+          "type": "keyword"
+        },
+        "http_status": {
+          "type": "long"
+        },
+        "http_url": {
+          "type": "keyword"
+        },
+        "http_vary": {
+          "type": "keyword"
+        },
+        "in_iface": {
+          "type": "keyword"
+        },
+        "message": {
+          "type": "text",
+          "analyzer": "standard"
+        },
+        "name": {
+          "type": "keyword"
+        },
+        "offset": {
+          "type": "long"
+        },
+        "packet": {
+          "type": "keyword"
+        },
+        "packet_info_linktype": {
+          "type": "long"
+        },
+        "payload": {
+          "type": "keyword"
+        },
+        "payload_printable": {
+          "type": "keyword"
+        },
+        "proto": {
+          "type": "keyword"
+        },
+        "smtp_helo": {
+          "type": "keyword"
+        },
+        "source": {
+          "type": "text",
+          "analyzer": "analyzer_keyword",
+          "fielddata": true
+        },
+        "src_ip": {
+          "type": "keyword"
+        },
+        "src_ip_city_name": {
+          "type": "keyword"
+        },
+        "src_ip_country_code": {
+          "type": "keyword"
+        },
+        "src_ip_geolocation": {
+          "type": "string",
+          "copy_to": "src_ip_location"
+        },
+        "src_ip_location": {
+          "type": "geo_point"
+        },
+        "src_port": {
+          "type": "text"
+        },
+        "src_addr_whois_org": {
+          "type": "keyword"
+        },
+        "stream": {
+          "type": "long"
+        },
+        "streams": {
+          "type": "keyword"
+        },
+        "tags": {
+          "type": "keyword"
+        },
+        "timestamp": {
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss.SSS"
+        },
+        "real_timestamp": {
+          "type": "date"
+        },
+        "tls_session_resumed": {
+          "type": "boolean"
+        },
+        "tls_sni": {
+          "type": "keyword"
+        },
+        "tls_version": {
+          "type": "keyword"
+        },
+        "tx_id": {
+          "type": "long"
+        },
+        "type": {
+          "type": "keyword"
+        }
+      },
+      "dynamic_templates": [
+        {
+          "internal_fields": {
+            "match": "gl2_*",
+            "mapping": {
+              "type": "keyword"
+            }
+          }
+        },
+        {
+          "store_generic": {
+            "match": "*",
+            "mapping": {
+              "index": "not_analyzed"
+            }
+          }
+        }
+      ],
+      "_source": {
+        "enabled": true
+      }
+    }
+  },
+  "aliases": {}
+}
