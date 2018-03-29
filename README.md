@@ -131,6 +131,28 @@ The first thing to do is create a directory for Filebeat to place its own logs. 
 `#mkdir /var/log/filebeat`
 
 Next, create a file file called filebeat.yml that contains the following in: /usr/local/etc/filebeat.yml. Be sure to use spaces, instead of tab characters.
+
+```
+#------------------------- File prospectors -------------------------------- 
+ filebeat.prospectors: 
+  - input_type: log 
+    paths: 
+    - /var/log/suricata/*/eve.json* 
+    fields_under_root: true 
+    fields: 
+      type: "suricataIDPS" 
+  	  tags: ["SuricataIDPS","JSON"] 
+#----------------------------- Logstash output -------------------------------- 
+ output.logstash: 
+  hosts: ["192.168.1.123:5042"] 
+#---------------------------- filebeat logging ------------------------------- 
+ logging.to_files: true 
+ logging.files: 
+   path: /var/log/filebeat 
+   name: filebeat.log 
+   keepfiles: 7
+```
+   
 The syntax of the actual configuration file is available on the Elastic website but this configuration file does the following:
 
 
@@ -142,10 +164,10 @@ The syntax of the actual configuration file is available on the Elastic website 
 * The log files in /var/log/filebeat/filebeat.log and do not save more than 7 files of them.
 
 Test the configuration:
-
-`#/usr/local/sbin/filebeat -c /usr/local/etc/filebeat.yml -configtest`
-
-`Config OK`
+```
+#/usr/local/sbin/filebeat -c /usr/local/etc/filebeat.yml -configtest
+Config OK
+```
 
 This should indicate if there is a problem with the configuration file. Note that the configuration file is sensitive to indentation tabs, so if you have used these instead of spaces, an error may be generated and the problem will not be obvious.
 
@@ -171,20 +193,19 @@ If you take a look at the script, it indicates that some configurations are conf
 
 Again, due to the personalization of pfSense, this file is overwritten at startup and should not be edited. However, the creation of a file /etc/rc.conf.local will take care of us. Set filebeat to boot at startup and specify the configuration file as follows:
 
-`#echo "filebeat_enable=yes" >> /etc/rc.conf.local`
-
-`#echo "filebeat_conf=/usr/local/etc/filebeat.yml" >> /etc/rc.conf.local`
+```
+#echo "filebeat_enable=yes" >> /etc/rc.conf.local
+#echo "filebeat_conf=/usr/local/etc/filebeat.yml" >> /etc/rc.conf.local
+```
 
 This will cause Filebeat to boot at startup. Restart your pfSense firewall and verify with PS:
 
-`#ps aux | grep beat`
-
-`root 64932 0.0 0.1 10368 2040 - Is 19Mar18 0: 00.00 daemon: / usr / local / sbin / filebeat [65093] (daemon)`
-
-`root 65093 0.0 0.9 54984 18888 - I 19Mar18 5: 37.31 / usr / local / sbin / filebeat -path.home / var / db / beats / filebeat -path.conf`
-
-`root 19915 0.0 0.1 14728 2344 1 S + 21:17 0: 00.00 grep beat`
-
+```
+#ps aux | grep beat
+root 64932 0.0 0.1 10368 2040 - Is 19Mar18 0: 00.00 daemon: / usr / local / sbin / filebeat [65093] (daemon)
+root 65093 0.0 0.9 54984 18888 - I 19Mar18 5: 37.31 / usr / local / sbin / filebeat -path.home / var / db / beats / filebeat -path.conf
+root 19915 0.0 0.1 14728 2344 1 S + 21:17 0: 00.00 grep beat
+```
 
 # Filebeat monitoring
 
