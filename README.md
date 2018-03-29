@@ -144,6 +144,7 @@ The syntax of the actual configuration file is available on the Elastic website 
 Test the configuration:
 
 `#/usr/local/sbin/filebeat -c /usr/local/etc/filebeat.yml -configtest
+
 Config OK`
 
 This should indicate if there is a problem with the configuration file. Note that the configuration file is sensitive to indentation tabs, so if you have used these instead of spaces, an error may be generated and the problem will not be obvious.
