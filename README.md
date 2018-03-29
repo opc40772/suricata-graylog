@@ -127,7 +127,7 @@ Confirm that you are receiving data using cat or tail in the file. If the file i
 
 The first thing to do is create a directory for Filebeat to place its own logs. The configuration file that we will create will ensure that Filebeat registers at this location to provide us with some useful data for debugging:
 
-```#mkdir / var / log / filebeat```
+```#mkdir /var/log/filebeat```
 
 Next, create a file file called filebeat.yml that contains the following in: /usr/local/etc/filebeat.yml. Be sure to use spaces, instead of tab characters.
 The syntax of the actual configuration file is available on the Elastic website but this configuration file does the following:
@@ -168,8 +168,9 @@ If you take a look at the script, it indicates that some configurations are conf
 
 Again, due to the personalization of pfSense, this file is overwritten at startup and should not be edited. However, the creation of a file /etc/rc.conf.local will take care of us. Set filebeat to boot at startup and specify the configuration file as follows:
 
-```#echo "filebeat_enable=yes" >> /etc/rc.conf.local #echo```
-```"filebeat_conf=/usr/local/etc/filebeat.yml" >> /etc/rc.conf.local```
+```#echo "filebeat_enable=yes" >> /etc/rc.conf.local```
+```#echo "filebeat_conf=/usr/local/etc/filebeat.yml" >> /etc/rc.conf.local```
+
 This will cause Filebeat to boot at startup. Restart your pfSense firewall and verify with PS:
 
 ```#ps aux | grep beat```
