@@ -243,7 +243,7 @@ We create the datasource in grafana which we will name Suricata-graylog
 
 ![alt text](https://www.sysadminsdecuba.com/wp-content/uploads/2018/03/Grafana_-_Suricata-Graylog_-_2018-03-29_15.47.38.png)
 
-I share with you a predesigned dashboard in the official grafana site which could be imported.
+I share with you a predesigned [dashboard in the official grafana](https://grafana.com/dashboards/5243) site which could be imported.
 
 ![alt text](https://www.sysadminsdecuba.com/wp-content/uploads/2018/03/import1.png)
 
