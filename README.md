@@ -19,14 +19,15 @@ and with Cerebro we can check it\
 
 As we will see later in the IDS Suricata we will register their logs in JSON format which made the construction of the extractors in the Graylog much easier in this format. The content pack includes Input of type beats, extractors, lookup tables, Data adapters for lockup tables and Cache for lookup tables. . To download these files we install git to clone the repository.
 
-```#apt-get install git```
-
+`#apt-get install git`
 
 and then we cloned it
-```#git clone https://github.com/opc40772/suricata-graylog```
+
+`#git clone https://github.com/opc40772/suricata-graylog`
 
 We will locate the CSV file of the lookup tables to later convert the number of ports to services name. From this git that you just cloned, we selected the service-names-port-numbers.csv file and copied it to /etc/graylog/server.
-```#cp service-names-port-numbers.csv /etc/graylog/server```
+
+`#cp service-names-port-numbers.csv /etc/graylog/server`
 
 We now import the file from the Content Pack folder and for them we select in the System/Content Packs the option Import content packs to upload the file.
 
@@ -67,7 +68,7 @@ And then we press the create button.
 
 Now we will stop the graylog service to proceed to eliminate the index through brain.
 
-```#systemctl stop graylog-server.service```
+`#systemctl stop graylog-server.service`
 
 In brain we stand on top of the index and unfold the options and select delete index.
 
@@ -75,7 +76,7 @@ In brain we stand on top of the index and unfold the options and select delete i
 
 We start the graylog service again and this will create the index with this template.
 
-```#systemctl start graylog-server.service```
+`#systemctl start graylog-server.service`
 
 # Pfsense
 
@@ -94,7 +95,7 @@ Installing the package:
 Use your terminal program of choice for SSH to access PFSense as the administrator user and choose option 8 to enter the freeBSD shell
 Install the package using the following command:
 
-```#pkg add http://pkg.freebsd.org/FreeBSD:11:amd64/latest/All/beats-6.2.2.txz```
+`#pkg add http://pkg.freebsd.org/FreeBSD:11:amd64/latest/All/beats-6.2.2.txz`
 
 The package must be installed in /usr/local
 
@@ -111,11 +112,11 @@ It is possible to configure the registry at the level of each interface within S
 
 The relevant configuration is:
 
-    EVE JSON Log: Mark
-    EVE Output Type: Select 'FILE'
-    EVE Log Alerts: Mark
-    EVE Log Alert Payload
-    EVE Log Alert details: Mark as shown in the previous image.
+* EVE JSON Log: Mark
+* EVE Output Type: Select 'FILE'
+* EVE Log Alerts: Mark
+* EVE Log Alert Payload
+* EVE Log Alert details: Mark as shown in the previous image.
 
 The other configurations are not relevant. Once you have configured the previous configurations, do not forget to click on the 'Save' button at the bottom of the screen.
 
@@ -127,22 +128,23 @@ Confirm that you are receiving data using cat or tail in the file. If the file i
 
 The first thing to do is create a directory for Filebeat to place its own logs. The configuration file that we will create will ensure that Filebeat registers at this location to provide us with some useful data for debugging:
 
-```#mkdir /var/log/filebeat```
+`#mkdir /var/log/filebeat`
 
 Next, create a file file called filebeat.yml that contains the following in: /usr/local/etc/filebeat.yml. Be sure to use spaces, instead of tab characters.
 The syntax of the actual configuration file is available on the Elastic website but this configuration file does the following:
 
-    Process all files in subdirectories in /var/log/suricata/ that match the file specification: eve.json *
+
+* Process all files in subdirectories in /var/log/suricata/ that match the file specification: eve.json *
     The files will be log files
-    For each log entry, add the type field at the root level with the value of 'suricataIDPS'; this will be used to determine the processing within Graylog once the file reaches our destination server.
-    For each record entry, add the labels 'SuricataIDPS' and 'JSON'. These are arbitrary tags added to the records for use in queries in Graylog.
-    Send the events to Graylog at 192.168.1.123:5044
-    The log files in /var/log/filebeat/filebeat.log and do not save more than 7 files of them.
+* For each log entry, add the type field at the root level with the value of 'suricataIDPS'; this will be used to determine the processing within Graylog once the file reaches our destination server.
+* For each record entry, add the labels 'SuricataIDPS' and 'JSON'. These are arbitrary tags added to the records for use in queries in Graylog.
+* Send the events to Graylog at 192.168.1.123:5044
+* The log files in /var/log/filebeat/filebeat.log and do not save more than 7 files of them.
 
 Test the configuration:
 
-```#/usr/local/sbin/filebeat -c /usr/local/etc/filebeat.yml -configtest```
-```Config OK```
+`#/usr/local/sbin/filebeat -c /usr/local/etc/filebeat.yml -configtest
+Config OK`
 
 This should indicate if there is a problem with the configuration file. Note that the configuration file is sensitive to indentation tabs, so if you have used these instead of spaces, an error may be generated and the problem will not be obvious.
 
@@ -169,14 +171,19 @@ If you take a look at the script, it indicates that some configurations are conf
 Again, due to the personalization of pfSense, this file is overwritten at startup and should not be edited. However, the creation of a file /etc/rc.conf.local will take care of us. Set filebeat to boot at startup and specify the configuration file as follows:
 
 ```#echo "filebeat_enable=yes" >> /etc/rc.conf.local```
+
 ```#echo "filebeat_conf=/usr/local/etc/filebeat.yml" >> /etc/rc.conf.local```
 
 This will cause Filebeat to boot at startup. Restart your pfSense firewall and verify with PS:
 
 ```#ps aux | grep beat```
+
 ```root 64932 0.0 0.1 10368 2040 - Is 19Mar18 0: 00.00 daemon: / usr / local / sbin / filebeat [65093] (daemon)```
+
 ```root 65093 0.0 0.9 54984 18888 - I 19Mar18 5: 37.31 / usr / local / sbin / filebeat -path.home / var / db / beats / filebeat -path.conf```
+
 ```root 19915 0.0 0.1 14728 2344 1 S + 21:17 0: 00.00 grep beat```
+
 
 # Filebeat monitoring
 
