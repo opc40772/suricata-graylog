@@ -46,7 +46,7 @@ And we apply it
 
 We edit the stream of Suricata in Stream to associate the index that we created initially. We mark that it eliminates the coincidences for the default stream All message so that only it stores it in the index of Suricata.
 
-![alt text]((https://www.sysadminsdecuba.com/wp-content/uploads/2018/03/Graylog_-_Streams_-_2018-03-29_14.29.22.png)
+![alt text](https://www.sysadminsdecuba.com/wp-content/uploads/2018/03/Graylog_-_Streams_-_2018-03-29_14.29.22.png)
 
 # Brain
 
@@ -132,7 +132,7 @@ The first thing to do is create a directory for Filebeat to place its own logs. 
 Next, create a file file called filebeat.yml that contains the following in: /usr/local/etc/filebeat.yml. Be sure to use spaces, instead of tab characters.
 The syntax of the actual configuration file is available on the Elastic website but this configuration file does the following:
 
-    Process all files in subdirectories in / var / log / meerkat / that match the file specification: eve.json *
+    Process all files in subdirectories in /var/log/suricata/ that match the file specification: eve.json *
     The files will be log files
     For each log entry, add the type field at the root level with the value of 'suricataIDPS'; this will be used to determine the processing within Graylog once the file reaches our destination server.
     For each record entry, add the labels 'SuricataIDPS' and 'JSON'. These are arbitrary tags added to the records for use in queries in Graylog.
@@ -168,8 +168,8 @@ If you take a look at the script, it indicates that some configurations are conf
 
 Again, due to the personalization of pfSense, this file is overwritten at startup and should not be edited. However, the creation of a file /etc/rc.conf.local will take care of us. Set filebeat to boot at startup and specify the configuration file as follows:
 
-```#echo "filebeat_enable = yes" & gt; & gt; /etc/rc.conf.local```
-```#echo "filebeat_conf = / usr / local / etc / filebeat.yml" & gt; & gt; /etc/rc.conf.local```
+```#echo "filebeat_enable=yes" >> /etc/rc.conf.local #echo```
+```"filebeat_conf=/usr/local/etc/filebeat.yml" >> /etc/rc.conf.local```
 This will cause Filebeat to boot at startup. Restart your pfSense firewall and verify with PS:
 
 ```#ps aux | grep beat```
